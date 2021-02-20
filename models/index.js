@@ -7,9 +7,12 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+
 db.User = require('./user')(sequelize, Sequelize);
 db.Post = require('./post')(sequelize, Sequelize);
 db.Hashtag = require('./hashtag')(sequelize, Sequelize);
+db.Domain = require('./domain')(sequelize, Sequelize);
+
 db.User.hasMany(db.Post);
 db.Post.belongsTo(db.User);
 db.Post.belongsToMany(db.Hashtag, { through: 'PostHashtag' });
@@ -24,5 +27,7 @@ db.User.belongsToMany(db.User, {
   as: 'Followings',
   through: 'Follow',
 });
+db.User.hasMany(db.Domain);
+db.Domain.belongsTo(db.User);
 
 module.exports = db;
