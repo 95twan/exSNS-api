@@ -18,7 +18,7 @@ exports.isNotLoggedIn = (req, res, next) => {
 
 exports.verifyToken = (req, res, next) => {
     try {
-        req.decoded = jwt.verify(req.headers.authentication, process.env.JWT_SECRET);
+        req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
         return next();
     } catch (err) {
         if (err.name === 'TokenExpiredError') {
