@@ -1,10 +1,22 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
+const { URL } = require('url');
 
 const { verifyToken, apiLimiter } = require('./middlewares');
 const { User, Domain, Post, Hashtag } = require('../models');
 
 const router = express.Router();
+
+router.use(async (req, res, next) => {
+    const url = new URL(req.get('origin'));
+    const domain = await Domain.findOne({ where: { host: url.host } });
+    if (domain) {
+        cors({ origin: req.get('origin') })(req, res, next);
+    } else {
+        next();
+    }
+});
 
 router.post('/token', apiLimiter, async (req, res) => {
     const { clientSecret } = req.body;
